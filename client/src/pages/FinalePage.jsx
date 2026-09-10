@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Heart, Send, CheckCircle2, PartyPopper, Cake, Gift, X } from 'lucide-react';
+import { Sparkles, Heart, PartyPopper, Cake, Gift, X } from 'lucide-react';
 import { PageTransition } from '../components/PageTransition';
 import { ConfettiCanvas } from '../components/ConfettiCanvas';
 import { GlassCard } from '../components/GlassCard';
 import { birthdayConfig } from '../data/birthdayConfig';
 import { useSound } from '../context/SoundContext';
-import { api } from '../utils/api';
 import confetti from 'canvas-confetti';
 import goldenHourGlowImg from '../assets/golden_hour_glow.jpg';
 import deepalBirthdayQueenImg from '../assets/deepal_birthday_queen.jpg';
@@ -17,8 +16,6 @@ export const FinalePage = () => {
   const { playPop, playSuccess, playSparkle } = useSound();
   const [phase, setPhase] = useState('teaser');
   const [countdown, setCountdown] = useState(3);
-  const [noteText, setNoteText] = useState('');
-  const [noteSubmitted, setNoteSubmitted] = useState(false);
   const [candlesBlown, setCandlesBlown] = useState(false);
   const [showWishesModal, setShowWishesModal] = useState(false);
   const [selectedPic, setSelectedPic] = useState(null);
@@ -144,14 +141,6 @@ export const FinalePage = () => {
     playSparkle();
     setCandlesBlown(true);
     triggerPartyPoppers();
-  };
-
-  const handleNoteSubmit = async (e) => {
-    e.preventDefault();
-    if (!noteText.trim()) return;
-    playSuccess();
-    await api.submitMessage(recipientName, noteText);
-    setNoteSubmitted(true);
   };
 
   return (
@@ -401,42 +390,6 @@ export const FinalePage = () => {
                   {finale.finalHeartNote}
                 </p>
               </GlassCard>
-
-              {/* Interactive Wish Box - High Contrast Form Controls */}
-              <div className="max-w-md mx-auto my-8">
-                <GlassCard hover={false} className="p-6 text-left bg-white/95 border-2 border-white shadow-glass">
-                  <h4 className="text-base font-black text-[#1F1A3A] mb-1 flex items-center gap-2 font-comic">
-                    <span>Leave a note for N 💌</span>
-                  </h4>
-                  <p className="text-xs text-[#433D60] mb-4 font-bold font-comic">
-                    Send a quick reply, wish, or thought directly to the database!
-                  </p>
-
-                  {!noteSubmitted ? (
-                    <form onSubmit={handleNoteSubmit} className="flex flex-col gap-3">
-                      <textarea
-                        value={noteText}
-                        onChange={(e) => setNoteText(e.target.value)}
-                        placeholder="Write your note here..."
-                        rows={3}
-                        className="w-full p-3 rounded-2xl bg-[#F8F9FF] border border-[#9FA1FF]/40 text-xs text-[#1F1A3A] placeholder-[#6E6A8A] focus:outline-none focus:ring-2 focus:ring-[#9FA1FF] resize-none font-bold shadow-inner font-comic"
-                      />
-                      <button
-                        type="submit"
-                        disabled={!noteText.trim()}
-                        className="w-full py-3 rounded-xl bg-[#9FA1FF] hover:bg-[#8587FF] text-white font-black text-xs shadow-soft hover:scale-[1.02] transition-all flex items-center justify-center gap-2 disabled:opacity-50 font-comic"
-                      >
-                        <Send size={14} /> Send Note
-                      </button>
-                    </form>
-                  ) : (
-                    <div className="p-4 rounded-xl bg-[#D9F9DF] border border-emerald-300 text-[#1F1A3A] text-xs font-black flex items-center gap-2 font-comic">
-                      <CheckCircle2 size={16} className="text-emerald-700" />
-                      <span>Note saved! Thank you for making my day too. ❤️</span>
-                    </div>
-                  )}
-                </GlassCard>
-              </div>
 
               {/* --- GRAND BIRTHDAY WISHES POPUP MODAL --- */}
               <AnimatePresence>
